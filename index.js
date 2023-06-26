@@ -5,7 +5,7 @@
 require('dotenv').config();
 var express = require('express');
 var app = express();
-const os = require('os');
+const requestIp = require('request-ip');
 
 // enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
 // so that your API is remotely testable by FCC
@@ -26,14 +26,14 @@ app.get('/api/hello', function (req, res) {
 });
 
 app.get('/api/whoami', async function (req, res) {
-  let ip = req.ip;
-  try {
-    const response = await fetch('https://api.ipify.org?format=json');
-    const data = await response.json();
-    ip = data.ip;
-  } catch (error) {
-    console.error('Error fetching IP:', error);
-  }
+  let ip = requestIp.getClientIp(req);
+  // try {
+  //   const response = await fetch('https://api.ipify.org?format=json');
+  //   const data = await response.json();
+  //   ip = data.ip;
+  // } catch (error) {
+  //   console.error('Error fetching IP:', error);
+  // }
   const software = req.headers['user-agent'];
   const lang = req.headers['accept-language'];
   res.json({ipaddress: ip, language: lang, software: software});
